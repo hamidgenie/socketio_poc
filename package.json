@@ -7,7 +7,7 @@
     "server": "nodemon server.js --prefix ./server",
     "client": "npm start --prefix ./client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "prepare": "npm i && npm i --prefix ./client && npm i --prefix ./server"
+    "install-dep": "npm i --prefix ./ && npm i --prefix ./client && npm i --prefix ./server"
   },
   "author": "",
   "license": "ISC",

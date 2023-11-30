@@ -1,10 +1,12 @@
 import { SendOutlined } from "@ant-design/icons";
 import { Button, Col, Divider, Input, Row } from "antd";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import { socket } from "../../socket";
 
 export default function Chat() {
+  const socketConnected = useSelector((state) => state.socket.connected);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const onSend = () => {
@@ -24,6 +26,20 @@ export default function Chat() {
     };
   }, []);
 
+  useEffect(() => {
+    if (socketConnected) {
+      setMessages((prev) => [
+        ...prev,
+        { message: "You are Connected!", type: "system" },
+      ]);
+    } else {
+      setMessages((prev) => [
+        ...prev,
+        { message: "You are Disconnected!", type: "system" },
+      ]);
+    }
+  }, [socketConnected]);
+
   return (
     <>
       <Row gutter={[10, 10]}>
@@ -42,8 +58,22 @@ export default function Chat() {
             }}
           >
             <ul>
-              {messages.map(({ message }, index) => {
-                return <li key={`message-${index}`}>{decodeURI(message)}</li>;
+              {messages.map(({ message, type }, index) => {
+                return (
+                  <li
+                    style={
+                      type && type === "system"
+                        ? {
+                            color: "red",
+                            margin: "10px 10px"
+                          }
+                        : {}
+                    }
+                    key={`message-${index}`}
+                  >
+                    {decodeURI(message)}
+                  </li>
+                );
               })}
             </ul>
           </div>
@@ -53,6 +83,7 @@ export default function Chat() {
       <Row gutter={[10, 10]}>
         <Col span={20}>
           <Input
+            disabled={!socketConnected}
             size="large"
             style={{ width: "100%" }}
             value={message}
@@ -67,6 +98,7 @@ export default function Chat() {
             onClick={() => {
               onSend();
             }}
+            disabled={!socketConnected}
           >
             Send
           </Button>
