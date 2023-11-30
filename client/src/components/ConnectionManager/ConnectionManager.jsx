@@ -1,6 +1,10 @@
+import { Button, Space } from "antd";
 import { socket } from "../../socket";
 
-export default function ConnectionManager() {
+import { PiPlugsConnected } from "react-icons/pi";
+import { TbPlugConnected } from "react-icons/tb";
+
+export default function ConnectionManager({ isConnected }) {
   function connect() {
     socket.connect();
   }
@@ -10,9 +14,21 @@ export default function ConnectionManager() {
   }
 
   return (
-    <>
-      <button onClick={connect}>Connect</button>
-      <button onClick={disconnect}>Disconnect</button>
-    </>
+    <Space>
+      <Button
+        disabled={isConnected}
+        icon={<PiPlugsConnected />}
+        onClick={connect}
+      >
+        Connect
+      </Button>
+      <Button
+        disabled={!isConnected}
+        icon={<TbPlugConnected />}
+        onClick={disconnect}
+      >
+        Disconnect
+      </Button>
+    </Space>
   );
 }
